@@ -1,0 +1,241 @@
+==> Graph.h <==
+// File: Graph.h
+//
+// CMSC 341 Spring 2019
+//
+// Header file for Graph class
+//
+
+#ifndef _GRAPH_H_
+#define _GRAPH_H_
+
+#include <stdexcept>  // for throwing out_of_range exceptions
+#include <tuple>      // for tuple template
+
+class Graph {
+
+public:
+
+  // Graph constructor; must give number of vertices
+  Graph(int n);
+
+  // Graph copy constructor
+  Graph(const Graph& G);
+
+  // Graph destructor
+  ~Graph();
+
+  // Graph assignment operator
+  const Graph& operator= (const Graph& rhs);
+
+  // return number of vertices
+  int numVert();
+
+  // return number of edges
+  int numEdge();
+
+  // add edge between u and v with weight x
+  void addEdge(int u, int v, int x);
+
+  // print out data structure for debugging
+  void dump();
+
+  // Edge Iterator inner class
+  class EgIterator {
+
+  public: 
+    // Edge Iterator constructor; indx can be used to
+    // set m_indx for begin and end iterators.
+    EgIterator(Graph *Gptr = nullptr, int indx = 0);
+
+    // Compare iterators; only makes sense to compare with
+    // end iterator
+    bool operator!= (const EgIterator& rhs);
+	 
+    // Move iterator to next printable edge
+    void operator++(int dummy);   // post increment
+
+    // return edge at iterator location
+    std::tuple<int,int,int> operator*();
+
+  private:
+    Graph *m_Gptr;    // pointer to associated Graph
+    int m_indx;       // index of current edge in m_nz
+    int m_row;        // corresponding row of m_nz[m_indx]
+  };
+
+  // Make an initial edge Iterator
+  EgIterator egBegin();
+
+  // Make an end iterator for edge iterator
+  EgIterator egEnd();
+
+  // Neighbor Iterator inner class
+  class NbIterator {
+    
+  public: 
+    // Constructor for iterator for vertices adjacent to vertex v;
+    // indx can be used to set m_indx for begin and end iterators
+    NbIterator(Graph *Gptr = nullptr, int v = 0, int indx = 0);
+
+    // Compare iterators; only makes sense to compare with
+    // end iterator
+    bool operator!=(const NbIterator& rhs);
+
+    // Move iterator to next neighbor
+    void operator++(int dummy);
+
+    // Return neighbor at current iterator position
+    int operator*();
+
+  private:
+    Graph *m_Gptr;  // pointer to the associated Graph
+    int m_row;      // row (source) for which to find neighbors
+    int m_indx;     // current index into m_nz of Graph
+  };
+
+  // Make an initial neighbor iterator
+  NbIterator nbBegin(int v);
+
+  // Make an end neighbor iterator
+  NbIterator nbEnd(int v);
+
+private:
+
+  int *m_nz;  // non-zero elements array
+  int *m_re;  // row extent array
+  int *m_ci;  // column index array
+  int m_cap;  // capacity of m_nz and m_ci
+
+  int m_numVert;  // number of vertices
+  int m_numEdge;  // number of edges
+
+};
+
+
+
+#endif
+
+==> Int341.h <==
+// File: Int341.h
+// 
+// UMBC Spring 2018 CMSC 341 Project 2 
+//
+// Int341 is basically an int.
+// Having it defined as a class allows us to track the number of times
+// data items are copied for the SqList data structure for Project 2.
+//
+
+#ifndef _INT341_H_
+#define _INT341_H_
+
+class Int341 {
+
+public:
+
+   // constructor, default value = 0
+   //
+   Int341(int n=0) ;    
+
+   // destructor. (No actual memory dealloction, here.)
+   //
+   ~Int341() ;		
+
+   // copy constructor
+   //
+   Int341(const Int341& other) ;    
+
+   // assignment opertor
+   //
+   const Int341& operator=(const Int341& rhs) ;    
+
+   // comparison opertors
+   //
+   bool operator==(const Int341 &rhs) const { return m_data == rhs.m_data; }
+   bool operator!=(const Int341 &rhs) const { return m_data != rhs.m_data; }
+   bool operator>(const Int341 &rhs)  const { return m_data > rhs.m_data; }
+   bool operator<(const Int341 &rhs)  const { return m_data < rhs.m_data; }
+   bool operator>=(const Int341 &rhs) const { return m_data >= rhs.m_data; }
+   bool operator<=(const Int341 &rhs) const { return m_data <= rhs.m_data; }
+
+   // data "payload" is just an int
+   //
+   int m_data ;
+
+   // print out # of calls to constructor, copy constructor, 
+   // destructor and assignment operator
+   // 
+   static void report() ;
+
+   // turn on debugging output??
+   static bool m_debug ;
+
+private:
+   static int m_constructor_calls ;
+   static int m_copy_constr_calls ;
+   static int m_destructor_calls  ;
+   static int m_assignment_calls  ;
+
+} ;
+
+#endif
+
+==> Int341.cpp <==
+#include <iostream>
+#include "Int341.h"
+using namespace std ;
+
+int Int341::m_constructor_calls = 0 ;
+int Int341::m_copy_constr_calls = 0;
+int Int341::m_destructor_calls = 0 ;
+int Int341::m_assignment_calls = 0 ;
+
+bool Int341::m_debug = false ;   // do not debug
+
+
+Int341::Int341(int n) {
+   if (m_debug) cout << "__Int341__ Constructor called\n" ;
+   m_data = n ;
+   m_constructor_calls++ ;
+}
+
+
+
+Int341::Int341(const Int341& other) {
+
+   if (m_debug) cout << "__Int341__ Copy constructor called\n" ;
+
+   m_data = other.m_data ;
+   m_copy_constr_calls++ ;
+}
+
+
+
+Int341::~Int341() {
+   if (m_debug) cout << "__Int341__ Destructor called\n" ;
+   m_data = 0 ;
+   m_destructor_calls++ ;
+}
+
+
+
+const Int341& Int341::operator=(const Int341& rhs) {
+
+   if (m_debug) cout << "__Int341__ Assignment operator called\n" ;
+
+   m_data = rhs.m_data ;
+   m_assignment_calls++ ;
+
+   return *this ;  
+}
+
+
+void Int341::report() {
+   cout << "__Int341__ Report usage:\n" ;
+   cout << "__Int341__   # of calls to constructor         = " << m_constructor_calls << endl ;
+   cout << "__Int341__   # of calls to copy constructor    = " << m_copy_constr_calls << endl ;
+   cout << "__Int341__   # of calls to destructor          = " << m_destructor_calls  << endl ;
+   cout << "__Int341__   # of calls to assignment operator = " << m_assignment_calls  << endl ;
+    
+}
+

@@ -1,0 +1,32 @@
+called: C:\tools\cygwin\bin\g++.exe
+	C:\Users\Owner\OneDrive - UMBC\SP2019\CMSC 341\341_SP2019\proj1
+	C:\tools\cygwin\bin\g++.exe
+	-Og
+	-ggdb
+	-c
+	nested.cpp
+
+called: C:\tools\cygwin\bin\g++.exe
+	C:\Users\Owner\OneDrive - UMBC\SP2019\CMSC 341\341_SP2019\proj1
+	C:\tools\cygwin\bin\g++.exe
+	-Og
+	-ggdb
+	-c
+	Int341.cpp
+
+called: C:\tools\cygwin\bin\g++.exe
+	C:\Users\Owner\OneDrive - UMBC\SP2019\CMSC 341\341_SP2019\proj1
+	C:\tools\cygwin\bin\g++.exe
+	-Og
+	-ggdb
+	-c
+	test2.cpp
+
+called: C:\tools\cygwin\bin\g++.exe
+	C:\Users\Owner\OneDrive - UMBC\SP2019\CMSC 341\341_SP2019\proj1
+	C:\tools\cygwin\bin\g++.exe
+	-Og
+	-ggdb
+	-c
+	test1.cpp
+

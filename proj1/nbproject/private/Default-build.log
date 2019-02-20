@@ -1,0 +1,4 @@
+g++ -Og -ggdb -c nested.cpp 
+g++ -Og -ggdb -c Int341.cpp 
+g++ -Og -ggdb -c test2.cpp 
+g++ -Og -ggdb -c test1.cpp 
