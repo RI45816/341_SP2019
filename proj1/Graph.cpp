@@ -134,8 +134,8 @@ void Graph::addEdge(int u, int v, int x) {
             new_nz[k] = m_nz[k];
             new_ci[k] = m_ci[k];
         }
-        //        delete m_nz;
-        //        delete m_ci;
+        delete m_nz;
+        delete m_ci;
         m_nz = new_nz;
         m_ci = new_ci;
     }
@@ -177,7 +177,7 @@ void Graph::addEdge(int u, int v, int x) {
  *   Descr: Debug Graph by displaying number of edges, vertices, and contents of three arrays
  */
 void Graph::dump() {
-    
+
     cout << "Dump of graph (numVert = " << m_numVert << ", numEdge = " << m_numEdge << ", m_cap = " << m_cap << ")\n" << endl;
 
     // Print out row extent array
