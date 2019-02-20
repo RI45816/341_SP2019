@@ -29,8 +29,11 @@ m_ci(new int[n]) {
     if (n <= 0) {
         throw std::out_of_range("Must have a positive number of vertices");
     }
-    for (int i = 0; i < n; i++)
-        m_nz[i] = m_re[i] = m_ci[i] = 0;
+    for (int i = 0; i < n; i++) {
+        m_nz[i] = 0;
+        m_re[i] = 0;
+        m_ci[i] = 0;
+    }
     m_re[n] = 0;
     //    m_nz = new int[n];
     //    m_re = new int[n + 1];
