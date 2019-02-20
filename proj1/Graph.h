@@ -106,7 +106,6 @@ private:
   int *m_ci;  // column index array
   int m_cap;  // capacity of m_nz and m_ci
 
-  static int debug_count;
   int m_numVert;  // number of vertices
   int m_numEdge;  // number of edges
 

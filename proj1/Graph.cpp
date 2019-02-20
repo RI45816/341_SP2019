@@ -14,7 +14,6 @@ using namespace std;
 #include <iostream>
 //#include <stdexcept>
 //#include <tuple>
-int Graph::debug_count = 0;
 
 /*
  *  Method: Graph::Graph()
@@ -54,7 +53,6 @@ Graph::Graph(const Graph &G) : m_cap(G.m_cap),
 
     for (int i = 0; i < m_cap; i++)
     {
-        cout << debug_count++ << endl;
         if (i < m_numVert + 1)
             m_re[i] = G.m_re[i];
         m_ci[i] = G.m_ci[i];
@@ -184,7 +182,6 @@ void Graph::addEdge(int u, int v, int x)
         bool max_added = false; // Prevent adding value multiple times
         for (int j = m_numEdge * 2 - 1, slider = 2; j > i; j--)
         {
-            cout << debug_count++ << endl;
             if (!max_added && ((j - 1 > m_re[max] && j - 1 <= m_re[max + 1] && m_ci[j - slider] < min) || j - 1 == m_re[max]))
             {
                 m_ci[j] = min;
