@@ -64,9 +64,9 @@ m_ci(new int[G.m_cap]) {
  *   Descr: Destructor for Graph, deallocate memory
  */
 Graph::~Graph() {
-    delete m_nz;
-    delete m_ci;
-    delete m_re;
+    delete[] m_nz;
+    delete[] m_ci;
+    delete[] m_re;
 }
 
 /*
@@ -133,21 +133,21 @@ void Graph::addEdge(int u, int v, int x) {
             }
         }
 
-    m_numEdge++; // Increment the total number of edges
 
     // Expand column index and nonzero arrays if necessary
-    if (m_numEdge << 1 > m_cap) {
+    if (m_numEdge +1  << 1 > m_cap) {
         m_cap <<= 1;
         int *new_nz = new int[m_cap], *new_ci = new int[m_cap];
         for (int k = 0; k < m_numEdge << 1; k++) {
             new_nz[k] = m_nz[k];
             new_ci[k] = m_ci[k];
         }
-        delete m_nz;
-        delete m_ci;
+        delete[] m_nz;
+        delete[] m_ci;
         m_nz = new_nz;
         m_ci = new_ci;
     }
+    m_numEdge++; // Increment the total number of edges
 
     // First element in Graph, special case
     if (m_numEdge == 1) {
