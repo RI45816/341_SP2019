@@ -29,6 +29,9 @@ m_ci(new int[n]) {
     if (n <= 0) {
         throw std::out_of_range("Must have a positive number of vertices");
     }
+    for (int i = 0; i < n; i++)
+        m_nz[i] = m_re[i] = m_ci[i] = 0;
+    m_re[n] = 0;
     //    m_nz = new int[n];
     //    m_re = new int[n + 1];
     //    m_ci = new int[n];
@@ -44,7 +47,7 @@ m_numVert(G.m_numVert),
 m_nz(new int[G.m_cap]),
 m_re(new int[G.m_numVert + 1]),
 m_ci(new int[G.m_cap]) {
-    for (int i = 0; i < m_numEdge << 1; i++) {
+    for (int i = 0; i < m_cap; i++) {
         cout << debug_count++ << endl;
         if (i < m_numVert + 1)
             m_re[i] = G.m_re[i];
@@ -74,7 +77,7 @@ const Graph &Graph::operator=(const Graph &rhs) {
     m_ci = new int[m_cap];
     m_re = new int[m_numVert + 1];
     m_nz = new int[m_cap];
-    for (int i = 0; i < m_numEdge << 1; i++) {
+    for (int i = 0; i < m_cap; i++) {
         if (i < m_numVert + 1)
             m_re[i] = rhs.m_re[i];
         m_ci[i] = rhs.m_ci[i];
