@@ -3,7 +3,7 @@ TEST = $(patsubst %.cpp, %, $(wildcard *test*.cpp nested.cpp))
 EXE = $(patsubst %.cpp, %, $(filter-out $(TEST:=.cpp),$(wildcard p[0-9]*.cpp)))
 
 GDBFLAGS = -O2 -ggdb
-CXXFLAGS = -Og -ggdb
+CXXFLAGS = -Og -ggdb -std=c++11
 # CXXFLAGS = -Wall -g
 # SOURCES = $(filter-out $(patsubst %, %.cpp,$(EXE)),$(wildcard *.cpp))
 SOURCES = $(filter-out $(EXE:=.cpp) $(TEST:=.cpp),$(wildcard *.cpp))

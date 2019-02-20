@@ -89,23 +89,23 @@ end
 # ppa
 # end
 
-b main
-commands
-silent
+# b main
+# commands
+# silent
 
-# b 27
-dc 41
-commands
-bf EgIterator
-bt
-ppa
-end
+# # b 27
+# dc 41
+# commands
+# bf EgIterator
+# bt
+# ppa
+# end
 # bf dump
 # command8
 # b 100
 # c
 # end
-c
+# c
 
 # b 322
 # b 188
@@ -114,12 +114,12 @@ c
 # b 230
 # call dup2(open("input.txt", 0), 0)
 # c
-end
+# end
 
+tr
 
-
-r
-bt
+# r
+# bt
 # bf addE
 
-ppa
+# ppa

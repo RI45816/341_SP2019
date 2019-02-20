@@ -176,7 +176,7 @@ void Graph::addEdge(int u, int v, int x) {
     }
 
     // Update the row extent array
-    for (int j = min; j < m_numVert + 1; j++) {
+    for (int j = min; j < m_numVert; j++) {
         m_re[j + 1] += j >= max ? 2 : 1;
     }
 }
