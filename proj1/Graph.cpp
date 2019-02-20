@@ -38,9 +38,6 @@ Graph::Graph(int n) : m_numVert(n),
         m_ci[i] = 0;
     }
     m_re[n] = 0;
-    //    m_nz = new int[n];
-    //    m_re = new int[n + 1];
-    //    m_ci = new int[n];
 }
 
 /*
@@ -85,6 +82,9 @@ const Graph &Graph::operator=(const Graph &rhs)
     if (this == &rhs)
         return *this;
 
+    delete[] m_ci;
+    delete[] m_re;
+    delete[] m_nz;
     m_numEdge = rhs.m_numEdge;
     m_numVert = rhs.m_numVert;
     m_cap = rhs.m_cap;
@@ -156,8 +156,7 @@ void Graph::addEdge(int u, int v, int x)
     if (m_numEdge + 1 << 1 > m_cap)
     {
         m_cap <<= 1;
-        int *new_nz = new int[m_cap];
-        int *new_ci = new int[m_cap];
+        int *new_nz = new int[m_cap], *new_ci = new int[m_cap];
         for (int k = 0; k < m_numEdge << 1; k++)
         {
             new_nz[k] = m_nz[k];
@@ -246,7 +245,7 @@ Graph::EgIterator::EgIterator(Graph *Gptr, int indx) : m_Gptr(Gptr), m_indx(indx
     if (Gptr)
     {
 
-        for (m_row = 0; (indx >= Gptr->m_re[m_row + 1] || (indx == Gptr->m_re[m_row] && indx == Gptr->m_re[m_row + 1])) && m_row < Gptr->m_numVert; m_row++)
+        for (m_row = 0; m_row < Gptr->m_numVert && (indx >= Gptr->m_re[m_row + 1] || (indx == Gptr->m_re[m_row] && indx == Gptr->m_re[m_row + 1])); m_row++)
             ;
     }
 }
@@ -270,7 +269,7 @@ void Graph::EgIterator::operator++(int dummy)
 
     for (m_indx++; m_indx < m_Gptr->m_numEdge << 1 && m_row >= m_Gptr->m_ci[m_indx]; m_indx++)
         ;
-    for (; (m_indx >= m_Gptr->m_re[m_row + 1] || (m_indx == m_Gptr->m_re[m_row] && m_indx == m_Gptr->m_re[m_row + 1])) && m_row < m_Gptr->m_numVert; m_row++)
+    for (; m_row < m_Gptr->m_numVert && (m_indx >= m_Gptr->m_re[m_row + 1] || (m_indx == m_Gptr->m_re[m_row] && m_indx == m_Gptr->m_re[m_row + 1])); m_row++)
         ;
 }
 
