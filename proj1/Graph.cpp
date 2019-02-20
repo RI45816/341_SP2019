@@ -58,6 +58,9 @@ m_ci(new int[G.m_cap]) {
  *   Descr: Destructor for Graph, deallocate memory
  */
 Graph::~Graph() {
+    delete m_nz;
+    delete m_ci;
+    delete m_re;
 }
 
 /*
