@@ -1,6 +1,6 @@
 # EXE = $${PWD\#\#*/}
 TEST = $(patsubst %.cpp, %, $(wildcard *test*.cpp nested.cpp))
-EXE = $(patsubst %.cpp, %, $(filter-out $(TEST:=.cpp),$(wildcard p[0-9]*.cpp) Driver.cpp))
+EXE = $(strip $(patsubst %.cpp, %, $(filter-out $(TEST:=.cpp),$(wildcard p[0-9]*.cpp) Driver.cpp)))
 
 GDBFLAGS = -O2 -ggdb
 CXXFLAGS = -Og -ggdb
