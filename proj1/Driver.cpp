@@ -52,9 +52,9 @@ int main(int argc, char **argv)
     G1.addEdge(10, 16, 5);
 
     Graph *G2 = new Graph(10);
-    G2->addEdge(6, 6, 2);
+    G2->addEdge(8, 6, 2);
     G2->addEdge(1, 9, 1);
-    G2->addEdge(3, 3, 6);
+    G2->addEdge(8, 5, 6);
     G2->addEdge(5, 3, 7);
     G2->addEdge(1, 3, 1);
     G2->addEdge(2, 9, 7);
@@ -66,15 +66,15 @@ int main(int argc, char **argv)
     G2->addEdge(1, 9, 3);
     G2->addEdge(4, 2, 1);
     G2->addEdge(1, 3, 8);
-    G2->addEdge(3, 3, 6);
+    G2->addEdge(2, 8, 6);
     G2->addEdge(2, 7, 6);
-    G2->addEdge(6, 6, 4);
-    G2->addEdge(4, 4, 6);
+    G2->addEdge(4, 1, 4);
+    G2->addEdge(0, 6, 6);
     G2->addEdge(9, 5, 6);
     G2->addEdge(1, 6, 8);
     G2->addEdge(3, 2, 1);
     G2->addEdge(2, 8, 1);
-    G2->addEdge(1, 1, 7);
+    G2->addEdge(3, 2, 7);
     G2->addEdge(9, 2, 8);
     G2->addEdge(8, 7, 1);
 
