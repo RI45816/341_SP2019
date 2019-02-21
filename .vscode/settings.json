@@ -4,6 +4,7 @@
         "*.wpl": "xml",
         "*.packagizer": "json",
         "*.blade.php": "blade",
-        "cstdlib": "cpp"
+        "cstdlib": "cpp",
+        "ostream": "cpp"
     }
 }
