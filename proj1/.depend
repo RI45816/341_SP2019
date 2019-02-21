@@ -1,2 +1,2 @@
-Int341.o: Int341.h
 Graph.o: Graph.h
+Int341.o: Int341.h

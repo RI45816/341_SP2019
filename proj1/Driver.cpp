@@ -10,7 +10,9 @@
  *
  */
 
-#include <cstdlib>
+// #include <cstdlib>
+#include <iostream>
+#include <tuple>
 #include "Graph.h"
 
 using namespace std;
@@ -21,48 +23,84 @@ using namespace std;
 int main(int argc, char **argv)
 {
 
-    Graph G1(50);
-    G1.addEdge(18, 12, 3);
-    G1.addEdge(37, 42, 13);
-    G1.addEdge(49, 13, 41);
-    G1.addEdge(48, 47, 2);
-    G1.addEdge(3, 45, 35);
-    G1.addEdge(44, 33, 20);
-    G1.addEdge(1, 24, 16);
-    G1.addEdge(4, 2, 27);
-    G1.addEdge(42, 43, 31);
-    G1.addEdge(33, 25, 4);
-    G1.addEdge(29, 34, 45);
-    G1.addEdge(19, 23, 5);
-    G1.addEdge(11, 21, 15);
-    G1.addEdge(19, 33, 20);
-    G1.addEdge(44, 38, 48);
-    G1.addEdge(48, 27, 43);
+    Graph G1(21);
 
-    Graph *G2 = new Graph(26);
-    G2->addEdge(22, 16, 19);
-    G2->addEdge(11, 12, 24);
-    G2->addEdge(19, 3, 4);
-    G2->addEdge(4, 7, 3);
-    G2->addEdge(25, 7, 4);
-    G2->addEdge(9, 22, 6);
-    G2->addEdge(8, 24, 10);
-    G2->addEdge(22, 3, 23);
-    G2->addEdge(12, 4, 24);
-    G2->addEdge(25, 16, 13);
-    G2->addEdge(19, 10, 8);
-    G2->addEdge(23, 19, 15);
-    G2->addEdge(9, 8, 13);
-    G2->addEdge(18, 18, 16);
-    G2->addEdge(4, 25, 16);
-    G2->addEdge(9, 24, 11);
+    G1.addEdge(3, 1, 12);
+    G1.addEdge(16, 7, 15);
+    G1.addEdge(5, 3, 19);
+    G1.addEdge(5, 17, 8);
+    G1.addEdge(6, 17, 14);
+    G1.addEdge(15, 6, 9);
+    G1.addEdge(7, 10, 12);
+    G1.addEdge(15, 2, 10);
+    G1.addEdge(19, 4, 1);
+    G1.addEdge(8, 5, 10);
+    G1.addEdge(17, 6, 11);
+    G1.addEdge(10, 13, 16);
+    G1.addEdge(5, 11, 2);
+    G1.addEdge(3, 1, 18);
+    G1.addEdge(20, 11, 18);
+    G1.addEdge(10, 9, 20);
+    G1.addEdge(19, 11, 10);
+    G1.addEdge(16, 8, 9);
+    G1.addEdge(20, 4, 8);
+    G1.addEdge(17, 7, 11);
+    G1.addEdge(6, 17, 10);
+    G1.addEdge(11, 17, 16);
+    G1.addEdge(6, 4, 16);
+    G1.addEdge(5, 14, 10);
+    G1.addEdge(10, 16, 5);
 
-
+    Graph *G2 = new Graph(10);
+    G2->addEdge(6, 6, 2);
+    G2->addEdge(1, 9, 1);
+    G2->addEdge(3, 3, 6);
+    G2->addEdge(5, 3, 7);
+    G2->addEdge(1, 3, 1);
+    G2->addEdge(2, 9, 7);
+    G2->addEdge(9, 5, 1);
+    G2->addEdge(4, 3, 2);
+    G2->addEdge(3, 4, 3);
+    G2->addEdge(1, 4, 6);
+    G2->addEdge(5, 8, 2);
+    G2->addEdge(1, 9, 3);
+    G2->addEdge(4, 2, 1);
+    G2->addEdge(1, 3, 8);
+    G2->addEdge(3, 3, 6);
+    G2->addEdge(2, 7, 6);
+    G2->addEdge(6, 6, 4);
+    G2->addEdge(4, 4, 6);
+    G2->addEdge(9, 5, 6);
+    G2->addEdge(1, 6, 8);
+    G2->addEdge(3, 2, 1);
+    G2->addEdge(2, 8, 1);
+    G2->addEdge(1, 1, 7);
+    G2->addEdge(9, 2, 8);
+    G2->addEdge(8, 7, 1);
+    
+    
     Graph G3 = *G2;
     Graph G4(G1);
+    
     G1.dump();
     G4.dump();
+    G2->dump();
     G3.dump();
+
+    Graph::EgIterator eit;
+    tuple<int,int,int> edge;
+
+    for (eit = G1.egBegin() ; eit != G1.egEnd() ; eit++) {
+
+     edge = *eit ;   // get current edge
+
+     // the two data members of a pair are first and second
+     //
+     cout << "(" << get<0>(edge) << ", "
+	  << get<1>(edge) << ", "
+	  << get<2>(edge) << ") " ;
+
+   }
 
     delete G2;
 }
