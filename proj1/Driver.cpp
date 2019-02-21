@@ -77,30 +77,51 @@ int main(int argc, char **argv)
     G2->addEdge(1, 1, 7);
     G2->addEdge(9, 2, 8);
     G2->addEdge(8, 7, 1);
-    
-    
+
     Graph G3 = *G2;
     Graph G4(G1);
-    
+
+    // Test to see if G1 works
+    cout << "\nG1?" << endl;
     G1.dump();
+
+    // Test to see if G4 is a copy of G1
+    cout << "\nG4 ~= G1?" << endl;
     G4.dump();
+
+    // Test to see if G3 is a copy of G2
+    cout << "\nG2" << endl;
     G2->dump();
+
+    cout << "\nG3 = G2?" << endl;
     G3.dump();
 
+    // Test neighbor iterator
+
+    Graph::NbIterator nit;
+
+    cout << "\nThe neighbors of vertex 1 in G2 are:\n";
+    for (nit = G2->nbBegin(1); nit != G2->nbEnd(1); nit++)
+    {
+        cout << *nit << " ";
+    }
+    cout << endl;
+
     Graph::EgIterator eit;
-    tuple<int,int,int> edge;
+    tuple<int, int, int> edge;
+    cout << "\nThe edges of G1 are:\n";
 
-    for (eit = G1.egBegin() ; eit != G1.egEnd() ; eit++) {
+    for (eit = G1.egBegin(); eit != G1.egEnd(); eit++)
+    {
 
-     edge = *eit ;   // get current edge
+        edge = *eit; // get current edge
 
-     // the two data members of a pair are first and second
-     //
-     cout << "(" << get<0>(edge) << ", "
-	  << get<1>(edge) << ", "
-	  << get<2>(edge) << ") " ;
-
-   }
+        // the two data members of a pair are first and second
+        //
+        cout << "(" << get<0>(edge) << ", "
+             << get<1>(edge) << ", "
+             << get<2>(edge) << ") ";
+    }
 
     delete G2;
 }
