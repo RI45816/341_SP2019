@@ -134,17 +134,17 @@ void Graph::addEdge(int u, int v, int x)
 
     int i = m_re[min];
     // Loop through to see if the edge is already in the graph
-    for (; i < m_numEdge * 2 && i < m_re[min + 1] && m_ci[i] < max; i++)
+    for (; i < m_numEdge * 2 && i < m_re[min + 1] && m_ci[i] <= max; i++)
 
         // If the edge is already in the graph change the weight and do the same for the transposed coordinates
         if (m_ci[i] == max)
         {
-            m_ci[i] = x;
+            m_nz[i] = x;
             for (int j = m_re[max]; j < m_re[max + 1]; j++)
             {
                 if (m_ci[j] == min)
                 {
-                    m_ci[j] = x;
+                    m_nz[j] = x;
                     return;
                 }
             }
@@ -336,7 +336,7 @@ void Graph::NbIterator::operator++(int dummy)
  */
 int Graph::NbIterator::operator*()
 {
-    if (m_indx == m_Gptr->m_re[m_row + 1])
+    if (m_indx >= m_Gptr->m_re[m_row + 1])
         throw out_of_range("NbIterator is already at end of row");
 
     return m_Gptr->m_ci[m_indx];

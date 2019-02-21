@@ -89,11 +89,22 @@ end
 # ppa
 # end
 
-# b main
-# commands
-# silent
+b main
+commands
+silent
+b 62
+commands
+silent
+b Graph.cpp:135
+commands
+ppa
+bt
+end
+c
+end
+c
 
-# # b 27
+# b 27
 # dc 41
 # commands
 # bf EgIterator
@@ -114,12 +125,12 @@ end
 # b 230
 # call dup2(open("input.txt", 0), 0)
 # c
-# end
+end
 
-tr
+# tr
 
-# r
-# bt
+r
+bt
 # bf addE
 
-# ppa
+ppa
