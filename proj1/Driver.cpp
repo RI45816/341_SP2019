@@ -20,7 +20,8 @@ using namespace std;
 /*
  * 
  */
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 
     Graph G1(21);
 
@@ -96,26 +97,28 @@ int main(int argc, char **argv) {
 
     cout << "\nThe edges of G1 are: ";
 
-    for (eit = G1.egBegin(); eit != G1.egEnd(); eit++) {
+    for (eit = G1.egBegin(); eit != G1.egEnd(); eit++)
+    {
 
         edge = *eit; // get current edge
 
         // the two data members of a pair are first and second
         cout << "(" << get<0>(edge) << ", "
-                << get<1>(edge) << ", "
-                << get<2>(edge) << ") ";
+             << get<1>(edge) << ", "
+             << get<2>(edge) << ") ";
     }
     cout << endl;
-    
-    for (int i = 0; i < 21; i++) {
+
+    for (int i = 0; i < 21; i++)
+    {
         cout << "\nThe neighbors of vertex " << i << " in G1 are: ";
-        for (nit = G1.nbBegin(i); nit != G1.nbEnd(i); nit++) {
+        for (nit = G1.nbBegin(i); nit != G1.nbEnd(i); nit++)
+        {
             cout << *nit << " ";
         }
     }
     cout << endl;
-    
-    
+
     // Test to see if G3 is a copy of G2
     cout << "\nG2" << endl;
     G2->dump();
@@ -123,80 +126,61 @@ int main(int argc, char **argv) {
     cout << "\nG3 = G2?" << endl;
     G3.dump();
 
-
-        // Loop through G2 using edge and neighbor iterators
+    // Loop through G2 using edge and neighbor iterators
 
     cout << "\nThe edges of G2 are: ";
 
-    for (eit = G2->egBegin(); eit != G2->egEnd(); eit++) {
+    for (eit = G2->egBegin(); eit != G2->egEnd(); eit++)
+    {
 
         edge = *eit; // get current edge
 
         // the two data members of a pair are first and second
         cout << "(" << get<0>(edge) << ", "
-                << get<1>(edge) << ", "
-                << get<2>(edge) << ") ";
+             << get<1>(edge) << ", "
+             << get<2>(edge) << ") ";
     }
     cout << endl;
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++)
+    {
         cout << "\nThe neighbors of vertex " << i << " in G2 are: ";
-        for (nit = G2->nbBegin(i); nit != G2->nbEnd(i); nit++) {
+        for (nit = G2->nbBegin(i); nit != G2->nbEnd(i); nit++)
+        {
             cout << *nit << " ";
         }
     }
     cout << endl;
 
-
-
     delete G2;
-    
+
     // See if G3 still exists after G2 is deleted
     cout << "\nG3?" << endl;
     G3.dump();
 
-
-        // Loop through G2 using edge and neighbor iterators
-
-    cout << "\nThe edges of G2 are: ";
-
-    for (eit = G3.egBegin(); eit != G3.egEnd(); eit++) {
-
-        edge = *eit; // get current edge
-
-        // the two data members of a pair are first and second
-        cout << "(" << get<0>(edge) << ", "
-                << get<1>(edge) << ", "
-                << get<2>(edge) << ") ";
-    }
-    cout << endl;
-
-    for (int i = 0; i < 21; i++) {
-        cout << "\nThe neighbors of vertex " << i << " in G2 are: ";
-        for (nit = G3.nbBegin(i); nit != G3.nbEnd(i); nit++) {
-            cout << *nit << " ";
-        }
-    }
-    cout << endl;    // Loop through G2 using edge and neighbor iterators
+    // Loop through G2 using edge and neighbor iterators
 
     cout << "\nThe edges of G3 are: ";
 
-    for (eit = G3.egBegin(); eit != G3.egEnd(); eit++) {
+    for (eit = G3.egBegin(); eit != G3.egEnd(); eit++)
+    {
 
         edge = *eit; // get current edge
 
         // the two data members of a pair are first and second
         cout << "(" << get<0>(edge) << ", "
-                << get<1>(edge) << ", "
-                << get<2>(edge) << ") ";
+             << get<1>(edge) << ", "
+             << get<2>(edge) << ") ";
     }
     cout << endl;
 
-    for (int i = 0; i < 21; i++) {
+    for (int i = 0; i < 10; i++)
+    {
         cout << "\nThe neighbors of vertex " << i << " in G3 are: ";
-        for (nit = G3.nbBegin(i); nit != G3.nbEnd(i); nit++) {
+        for (nit = G3.nbBegin(i); nit != G3.nbEnd(i); nit++)
+        {
             cout << *nit << " ";
         }
     }
-    cout << endl;
+    cout << endl; // Loop through G2 using edge and neighbor iterators
 }

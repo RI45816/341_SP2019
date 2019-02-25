@@ -307,6 +307,10 @@ Graph::EgIterator Graph::egEnd()
  */
 Graph::NbIterator::NbIterator(Graph *Gptr, int v, int indx) : m_Gptr(Gptr), m_indx(indx || !Gptr ? indx : Gptr->m_re[v]), m_row(v)
 {
+    if (Gptr && v >= Gptr->m_numVert)
+    {
+        throw out_of_range("NbIterator: Vertex is not in Graph");
+    }
 }
 
 /*
