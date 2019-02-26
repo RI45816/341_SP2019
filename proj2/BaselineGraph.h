@@ -43,7 +43,7 @@ namespace Baseline {
     public: 
       // Edge Iterator constructor; indx can be used to
       // set m_indx for begin and end iterators.
-      EgIterator(Graph *Gptr = 0, int indx = 0);
+      EgIterator(Graph *Gptr = nullptr, int indx = 0);
 
       // Compare iterators; only makes sense to compare with
       // end iterator
@@ -53,7 +53,7 @@ namespace Baseline {
       void operator++(int dummy);   // post increment
 
       // return edge at iterator location
-       std::tuple<int,int,int> operator*();
+      std::tuple<int,int,int> operator*();
 
     private:
       Graph *m_Gptr;    // pointer to associated Graph
@@ -73,7 +73,7 @@ namespace Baseline {
     public: 
       // Constructor for iterator for vertices adjacent to vertex v;
       // indx can be used to set m_indx for begin and end iterators
-      NbIterator(Graph *Gptr = 0, int v = 0, int indx = 0);
+      NbIterator(Graph *Gptr = nullptr, int v = 0, int indx = 0);
 
       // Compare iterators; only makes sense to compare with
       // end iterator

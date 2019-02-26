@@ -49,14 +49,3 @@ ostream& operator<<(ostream& outStream, const Error& err) {
   return outStream;
 }
 
-/*
- *  Method: Grader::printAllErrors()
- *   Descr: 
- */
-void Grader::printAllErrors()
-{
-}
-
-
-	/*------------------------------------------------------------------------------*/
-
