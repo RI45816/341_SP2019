@@ -1,0 +1,4 @@
+g++ -Og -ggdb -c Grader.cpp 
+g++ -Og -ggdb -c BaselineGraph.cpp 
+g++ -Og -ggdb -c Int341.cpp 
+g++ -Og -ggdb -c driver.cpp 

@@ -1,0 +1,906 @@
+==> BaselineGraph.h <==
+// File: BaselineGraph.h
+//
+// CMSC 341 Spring 2019
+//
+// Header file for Baseline::Graph class
+//
+
+#ifndef _BASELINEGRAPH_H_
+#define _BASELINEGRAPH_H_
+
+#include <stdexcept>  // For throwing out_of_range exceptions
+#include <tuple>      // Edges are represented as tuple<int,int,int>
+#include <vector>     // m_nz, m_ci, and m_re are of type vector<int>
+
+class Grader;  // Forward declaration needed for 'friend'
+
+namespace Baseline {
+  
+  class Graph {
+
+  public:
+
+    friend Grader;   // Allows Grader class to access private variables
+    
+    // Graph constructor; must give number of vertices
+    Graph(int n);
+
+    // return number of vertices
+    int numVert();
+
+    // return number of edges
+    int numEdge();
+
+    // add edge between u and v with weight x
+    void addEdge(int u, int v, int x);
+
+    // print out data structure for debugging
+    void dump();
+
+    // Edge Iterator inner class
+    class EgIterator {
+
+    public: 
+      // Edge Iterator constructor; indx can be used to
+      // set m_indx for begin and end iterators.
+      EgIterator(Graph *Gptr = nullptr, int indx = 0);
+
+      // Compare iterators; only makes sense to compare with
+      // end iterator
+      bool operator!= (const EgIterator& rhs);
+	 
+      // Move iterator to next printable edge
+      void operator++(int dummy);   // post increment
+
+      // return edge at iterator location
+      std::tuple<int,int,int> operator*();
+
+    private:
+      Graph *m_Gptr;    // pointer to associated Graph
+      int m_indx;       // index of current edge in m_nz
+      int m_row;        // corresponding row of m_nz[m_indx]
+    };
+
+    // Make an initial edge Iterator
+    EgIterator egBegin();
+
+    // Make an end iterator for edge iterator
+    EgIterator egEnd();
+
+    // Neighbor Iterator inner class
+    class NbIterator {
+    
+    public: 
+      // Constructor for iterator for vertices adjacent to vertex v;
+      // indx can be used to set m_indx for begin and end iterators
+      NbIterator(Graph *Gptr = nullptr, int v = 0, int indx = 0);
+
+      // Compare iterators; only makes sense to compare with
+      // end iterator
+      bool operator!=(const NbIterator& rhs);
+
+      // Move iterator to next neighbor
+      void operator++(int dummy);
+
+      // Return neighbor at current iterator position
+      int operator*();
+
+    private:
+      Graph *m_Gptr;  // pointer to the associated Graph
+      int m_row;      // row (source) for which to find neighbors
+      int m_indx;     // current index into m_nz of Graph
+    };
+
+    // Make an initial neighbor iterator
+    NbIterator nbBegin(int v);
+
+    // Make an end neighbor iterator
+    NbIterator nbEnd(int v);
+
+  private:
+    std::vector<int> m_nz;  // non-zero elements array
+    std::vector<int> m_ci;  // column index array
+    std::vector<int> m_re;  // row extent array
+    
+    int m_numVert;  // number of vertices
+    int m_numEdge;  // number of edges
+  };
+}
+
+#endif
+
+==> Grader.h <==
+// File: Grader.h
+//
+// CMSC 341 Spring 2019
+//
+// Header file for Grader class
+//
+
+#ifndef _GRADER_H
+#define _GRADER_H
+
+#include <iostream>
+#include <stdexcept>  // for throwing out_of_range exceptions
+#include <tuple>      // Edges are respresented as tuple<int,int,int>
+#include <queue>      // Errors and decuctions are saved in a queue
+#include <vector>     // Vectors are used to store Edge sequences and
+		      // may be used in test implementations
+#include <set>        // Sets may be used in test implementations
+
+using namespace std;
+
+typedef tuple<int,int,int> Edge;   // Edge type definition
+
+// Error - a small class to organize error messages and deductions.
+// Defined in-line.
+class Error {
+ public:
+
+  // Constructor.  deductions must be >= 0
+  Error(int deduct = 0, int id = 0, string description = "") {
+    if (deduct < 0) {
+      throw std::out_of_range("deduction for error must be non-negative");
+    }
+    m_deduction = deduct;
+    m_id = id;
+    m_description = description;
+  }
+
+  // deduction getter
+  int getDeduction() { return m_deduction; }
+
+  // id getter
+  int getId() { return m_id; }
+  
+  // description getter
+  string getDescription() { return m_description; }
+
+  // formatted output of Errors
+  friend ostream& operator<<(ostream& outStream, const Error& err);
+
+private:
+  int m_deduction;            // points to deduct
+  int m_id;                   // id number of error
+  string m_description;       // description of error
+};
+
+class Grader {
+
+ public:
+
+  // Constructor; may provide optional descriptive name
+  Grader(string name = "");
+
+  // In the following test functions, the parameters are:
+  //
+  //   int numVert: number of vertices in test graph
+  //
+  //   vector<Edge> edgeSeq: a sequence of edges to insert in the
+  //   graph
+  
+  // Test for *exact* correctness of m_re, m_nz, and m_ci.  Assume
+  // that m_re is initialized to all zeroes
+  bool testCSRExact(int numVert, vector<Edge> edgeSeq);
+
+  // Test for *unordered* correctness of m_re, m_nz, and m_ci.  An
+  // implementation passes if (1) the values in m_re are correct, and
+  // (2) the values in m_nz and m_ci for each row are correct, but not
+  // necessarily ordered by increasing m_ci values.
+  bool testCSRUnordered(int numVert, vector<Edge> edgeSeq);
+
+  // Test that for *every* vertex in the Graph, NbIterator produces
+  // the correct list of neighbor vertices.
+  bool testNbIterator(int numVert, vector<Edge> edgeSeq);
+
+  // Test that the edge iterator returns the correct list of edges.
+  // Each edge should occur exactly once even though it is represented
+  // twice in the data structure; that is, only one of (u, v, w) and
+  // (v, u, w) should be included in the list produced by the
+  // iterator.
+  bool testEgIterator(int numVert, vector<Edge> edgeSeq);
+
+  // Test that operations that are supposed to throw an out_of_range
+  // exception do so.
+  bool testExceptions(int numVert, vector<Edge> edgeSeq);
+
+  // Print all the deductions and errors in the error queue and total
+  // deductions.  The queue should be empty after the call.
+  void printAllErrors();
+
+  // Clear the error queue
+  void resetErrorQueue();
+
+ private:
+  string m_name;                 // Optional descriptive name
+  std::queue<Error> m_errors;    // Queue to hold errors and
+				 // deductions
+  
+  // ******************************************************//
+  // You may add private helper functions here.  They must //
+  // be declared inside the private section of the class.  // 
+  //*******************************************************//
+
+};
+
+#endif
+
+==> Graph.h <==
+// File: Graph.h
+//
+// CMSC 341 Spring 2019
+//
+// Header file for Graph class
+//
+
+#ifndef _GRAPH_H_
+#define _GRAPH_H_
+
+#include <stdexcept>  // for throwing out_of_range exceptions
+#include <tuple>      // for tuple template
+
+class Grader;  // Forward declaration needed for 'friend'
+
+class Graph {
+
+public:
+
+  friend Grader;  // Allows Grader class to access private variables
+
+  // Graph constructor; must give number of vertices
+  Graph(int n);
+
+  // Graph copy constructor
+  Graph(const Graph& G);
+
+  // Graph destructor
+  ~Graph();
+
+  // Graph assignment operator
+  const Graph& operator= (const Graph& rhs);
+
+  // return number of vertices
+  int numVert();
+
+  // return number of edges
+  int numEdge();
+
+  // add edge between u and v with weight x
+  void addEdge(int u, int v, int x);
+
+  // print out data structure for debugging
+  void dump();
+
+  // Edge Iterator inner class
+  class EgIterator {
+
+  public: 
+    // Edge Iterator constructor; indx can be used to
+    // set m_indx for begin and end iterators.
+    EgIterator(Graph *Gptr = nullptr, int indx = 0);
+
+    // Compare iterators; only makes sense to compare with
+    // end iterator
+    bool operator!= (const EgIterator& rhs);
+	 
+    // Move iterator to next printable edge
+    void operator++(int dummy);   // post increment
+
+    // return edge at iterator location
+    std::tuple<int,int,int> operator*();
+
+  private:
+    Graph *m_Gptr;    // pointer to associated Graph
+    int m_indx;       // index of current edge in m_nz
+    int m_row;        // corresponding row of m_nz[m_indx]
+  };
+
+  // Make an initial edge Iterator
+  EgIterator egBegin();
+
+  // Make an end iterator for edge iterator
+  EgIterator egEnd();
+
+  // Neighbor Iterator inner class
+  class NbIterator {
+    
+  public: 
+    // Constructor for iterator for vertices adjacent to vertex v;
+    // indx can be used to set m_indx for begin and end iterators
+    NbIterator(Graph *Gptr = nullptr, int v = 0, int indx = 0);
+
+    // Compare iterators; only makes sense to compare with
+    // end iterator
+    bool operator!=(const NbIterator& rhs);
+
+    // Move iterator to next neighbor
+    void operator++(int dummy);
+
+    // Return neighbor at current iterator position
+    int operator*();
+
+  private:
+    Graph *m_Gptr;  // pointer to the associated Graph
+    int m_row;      // row (source) for which to find neighbors
+    int m_indx;     // current index into m_nz of Graph
+  };
+
+  // Make an initial neighbor iterator
+  NbIterator nbBegin(int v);
+
+  // Make an end neighbor iterator
+  NbIterator nbEnd(int v);
+
+private:
+
+  int *m_nz;  // non-zero elements array
+  int *m_re;  // row extent array
+  int *m_ci;  // column index array
+  int m_cap;  // capacity of m_nz and m_ci
+
+  int m_numVert;  // number of vertices
+  int m_numEdge;  // ptr to number of edges
+
+};
+
+#endif
+
+==> Int341.h <==
+// File: Int341.h
+// 
+// UMBC Spring 2018 CMSC 341 Project 2 
+//
+// Int341 is basically an int.
+// Having it defined as a class allows us to track the number of times
+// data items are copied for the SqList data structure for Project 2.
+//
+
+#ifndef _INT341_H_
+#define _INT341_H_
+
+class Int341 {
+
+public:
+
+   // constructor, default value = 0
+   //
+   Int341(int n=0) ;    
+
+   // destructor. (No actual memory dealloction, here.)
+   //
+   ~Int341() ;		
+
+   // copy constructor
+   //
+   Int341(const Int341& other) ;    
+
+   // assignment opertor
+   //
+   const Int341& operator=(const Int341& rhs) ;    
+
+   // comparison opertors
+   //
+   bool operator==(const Int341 &rhs) const { return m_data == rhs.m_data; }
+   bool operator!=(const Int341 &rhs) const { return m_data != rhs.m_data; }
+   bool operator>(const Int341 &rhs)  const { return m_data > rhs.m_data; }
+   bool operator<(const Int341 &rhs)  const { return m_data < rhs.m_data; }
+   bool operator>=(const Int341 &rhs) const { return m_data >= rhs.m_data; }
+   bool operator<=(const Int341 &rhs) const { return m_data <= rhs.m_data; }
+
+   // data "payload" is just an int
+   //
+   int m_data ;
+
+   // print out # of calls to constructor, copy constructor, 
+   // destructor and assignment operator
+   // 
+   static void report() ;
+
+   // turn on debugging output??
+   static bool m_debug ;
+
+private:
+   static int m_constructor_calls ;
+   static int m_copy_constr_calls ;
+   static int m_destructor_calls  ;
+   static int m_assignment_calls  ;
+
+} ;
+
+#endif
+
+==> BaselineGraph.cpp <==
+#include <iostream>
+#include "BaselineGraph.h"
+
+namespace Baseline {
+
+  //
+  // Baseline::Graph implementations go here
+  //
+  
+}
+
+==> Grader.cpp <==
+// File: Grader.cpp
+//
+// CMSC 341 Spring 2019                                                                             
+//                                                                                                  
+// Method stubs for Grader class
+//         
+
+#include "Grader.h"
+#include "BaselineGraph.h"
+#include "Graph.h"
+
+Grader::Grader(string name) {
+  m_name = name;
+}
+
+bool Grader::testCSRExact(int numVert, vector<Edge> edgeSeq) {
+  return true;
+}
+
+bool Grader::testCSRUnordered(int numVert, vector<Edge> edgeSeq) {
+  return true;
+}
+
+bool Grader::testNbIterator(int numVert, vector<Edge> edgeSeq) {
+  return true;
+}
+
+bool Grader::testEgIterator(int numVert, vector<Edge> edgeSeq) {
+  return true;
+}
+
+bool Grader::testExceptions(int numVert, vector<Edge> edgeSeq) {
+  return true;
+}
+
+void Grader::resetErrorQueue() {
+}
+
+// Formatted output of Error object:
+// deduction: (id) description
+ostream& operator<<(ostream& outStream, const Error& err) {
+  if (err.m_deduction > 0) {
+    outStream << "-" << err.m_deduction << ": (" << err.m_id
+	      << ") " << err.m_description;
+  } else {
+    outStream << err.m_deduction << ": (" << err.m_id
+	      << ") " << err.m_description;
+  }
+  return outStream;
+}
+
+
+==> Graph.cpp <==
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/* 
+ * File:   Graph.cpp
+ * Author: Uzoma Uwanamodo
+ * 
+ */
+using namespace std;
+#include "Graph.h"
+#include <iostream>
+//#include <stdexcept>
+//#include <tuple>
+
+/*
+ *  Method: Graph::Graph()
+ *   Descr: Create a new Graph with n vertices
+ */
+Graph::Graph(int n) : m_numVert(n),
+                      m_cap(n),
+                      m_numEdge(0),
+                      m_nz(new int[n]),
+                      m_re(new int[n + 1]),
+                      m_ci(new int[n])
+{
+    if (n <= 0)
+    {
+        throw std::out_of_range("Must have a positive number of vertices");
+    }
+    for (int i = 0; i < n; i++)
+    {
+        m_nz[i] = 0;
+        m_re[i] = 0;
+        m_ci[i] = 0;
+    }
+    m_re[n] = 0;
+}
+
+/*
+ *  Method: Graph::Graph()
+ *   Descr: Copy constructor for Graph, create deep copy
+ */
+Graph::Graph(const Graph &G) : m_cap(G.m_cap),
+                               m_numEdge(G.m_numEdge),
+                               m_numVert(G.m_numVert),
+                               m_nz(new int[G.m_cap]),
+                               m_re(new int[G.m_numVert + 1]),
+                               m_ci(new int[G.m_cap])
+{
+
+    for (int i = 0; i < m_cap; i++)
+    {
+        if (i < m_numVert + 1)
+            m_re[i] = G.m_re[i];
+        m_ci[i] = G.m_ci[i];
+        m_nz[i] = G.m_nz[i];
+    }
+}
+
+/*
+ *  Method: Graph::~Graph()
+ *   Descr: Destructor for Graph, deallocate memory
+ */
+Graph::~Graph()
+{
+    delete[] m_nz;
+    delete[] m_ci;
+    delete[] m_re;
+}
+
+/*
+ *  Method: Graph::operator=()
+ *   Descr: Assignment operator for Graph set one equal to the other
+ */
+const Graph &Graph::operator=(const Graph &rhs)
+{
+    if (this == &rhs)
+        return *this;
+
+    delete[] m_ci;
+    delete[] m_re;
+    delete[] m_nz;
+    m_numEdge = rhs.m_numEdge;
+    m_numVert = rhs.m_numVert;
+    m_cap = rhs.m_cap;
+    m_ci = new int[m_cap];
+    m_re = new int[m_numVert + 1];
+    m_nz = new int[m_cap];
+    for (int i = 0; i < m_cap; i++)
+    {
+        if (i < m_numVert + 1)
+            m_re[i] = rhs.m_re[i];
+        m_ci[i] = rhs.m_ci[i];
+        m_nz[i] = rhs.m_nz[i];
+    }
+    return *this;
+}
+
+/*
+ *  Method: Graph::numVert()
+ *   Descr: Getter for m_numVert
+ */
+int Graph::numVert()
+{
+    return m_numVert; // return the number of vertices in graph
+}
+
+/*
+ *  Method: Graph::numEdge()
+ *   Descr: Getter for m_numEdge
+ */
+int Graph::numEdge()
+{
+    return m_numEdge; // return number of edges in graph
+}
+
+/*
+ *  Method: Graph::addEdge()
+ *   Descr: Add an edge between vertices u and v with weight x
+ */
+void Graph::addEdge(int u, int v, int x)
+{
+    // Determine which index is higher
+    int max = u, min = v;
+    if (u < v)
+        min = u, max = v;
+
+    // Determine if vertices are in graph
+    if (max >= m_numVert || min < 0)
+        throw out_of_range("Vertex index is out of range");
+
+    int i = m_re[min];
+    // Loop through to see if the edge is already in the graph
+    for (; i < m_numEdge * 2 && i < m_re[min + 1] && m_ci[i] <= max; i++)
+
+        // If the edge is already in the graph change the weight and do the same for the transposed coordinates
+        if (m_ci[i] == max)
+        {
+            m_nz[i] = x;
+            for (int j = m_re[max]; j < m_re[max + 1]; j++)
+            {
+                if (m_ci[j] == min)
+                {
+                    m_nz[j] = x;
+                    return;
+                }
+            }
+        }
+
+    // Expand column index and nonzero arrays if necessary
+    if (m_numEdge + 1 << 1 > m_cap)
+    {
+        m_cap <<= 1;
+        int *new_nz = new int[m_cap], *new_ci = new int[m_cap];
+        for (int k = 0; k < m_numEdge << 1; k++)
+        {
+            new_nz[k] = m_nz[k];
+            new_ci[k] = m_ci[k];
+        }
+        delete[] m_nz;
+        delete[] m_ci;
+        m_nz = new_nz;
+        m_ci = new_ci;
+    }
+    m_numEdge++; // Increment the total number of edges
+
+    // First element in Graph, special case
+    if (m_numEdge == 1)
+    {
+        m_nz[0] = m_nz[1] = x;
+        m_ci[0] = max;
+        m_ci[1] = min;
+        //        return;
+    }
+    else
+    {
+        // Update the column index and non-zero arrays
+        //    i--;
+        bool max_added = false; // Prevent adding value multiple times
+        for (int j = m_numEdge * 2 - 1, slider = 2; j > i; j--)
+        {
+            if (!max_added && ((j - 1 > m_re[max] && j - 1 <= m_re[max + 1] && m_ci[j - slider] < min) || j - 1 == m_re[max]))
+            {
+                m_ci[j] = min;
+                m_nz[j] = x;
+                max_added = !0;
+                slider--;
+                continue;
+            }
+            m_ci[j] = m_ci[j - slider];
+            m_nz[j] = m_nz[j - slider];
+        }
+        m_ci[i] = max;
+        m_nz[i] = x;
+    }
+
+    // Update the row extent array
+    for (int j = min; j < m_numVert; j++)
+    {
+        m_re[j + 1] += j >= max ? 2 : 1;
+    }
+}
+
+/*
+ *  Method: Graph::dump()
+ *   Descr: Debug Graph by displaying number of edges, vertices, and contents of three arrays
+ */
+void Graph::dump()
+{
+
+    cout << "Dump of graph (numVert = " << m_numVert << ", numEdge = " << m_numEdge << ", m_cap = " << m_cap << ")\n"
+         << endl;
+
+    // Print out row extent array
+    cout << "m_re: ";
+    for (int i = 0; i < m_numVert + 1; i++)
+        cout << m_re[i] << " ";
+    cout << endl;
+
+    // Print out nonzero array
+    cout << "m_nz: ";
+    for (int i = 0; i < m_numEdge << 1; i++)
+        cout << m_nz[i] << " ";
+    cout << endl;
+
+    // Print out column index array
+    cout << "m_ci: ";
+    for (int i = 0; i < m_numEdge << 1; i++)
+        cout << m_ci[i] << " ";
+    cout << endl;
+}
+
+/*
+ *  Method: Graph::EgIterator::EgIterator()
+ *   Descr: Create an iterator that shows all the edges
+ */
+Graph::EgIterator::EgIterator(Graph *Gptr, int indx) : m_Gptr(Gptr), m_indx(indx)
+{
+    if (Gptr)
+    {
+
+        for (m_row = 0; m_row < Gptr->m_numVert && (indx >= Gptr->m_re[m_row + 1] || (indx == Gptr->m_re[m_row] && indx == Gptr->m_re[m_row + 1])); m_row++)
+            ;
+    }
+}
+
+/*
+ *  Method: Graph::EgIterator::operator!=()
+ *   Descr: Override iterator comparison operator
+ */
+bool Graph::EgIterator::operator!=(const EgIterator &rhs)
+{
+
+    return m_Gptr != rhs.m_Gptr || m_row != rhs.m_row || m_indx != rhs.m_indx;
+}
+
+/*
+ *  Method: Graph::EgIterator::operator++()
+ *   Descr: Override iterator increment operator
+ */
+void Graph::EgIterator::operator++(int dummy)
+{
+
+    for (m_indx++; m_indx < m_Gptr->m_numEdge << 1 && m_row >= m_Gptr->m_ci[m_indx]; m_indx++)
+        ;
+    for (; m_row < m_Gptr->m_numVert && (m_indx >= m_Gptr->m_re[m_row + 1] || (m_indx == m_Gptr->m_re[m_row] && m_indx == m_Gptr->m_re[m_row + 1])); m_row++)
+        ;
+}
+
+/*
+ *  Method: Graph::EgIterator::operator*()
+ *   Descr: Override iterator dereference operator
+ */
+std::tuple<int, int, int> Graph::EgIterator::operator*()
+{
+    //    printf("[%i]:<%i, %i, %i>",m_indx,m_row,m_Gptr->m_ci[m_indx],m_Gptr->m_nz[m_indx]);
+    if (m_indx >= m_Gptr->m_numEdge << 1)
+        throw out_of_range("EgIterator is at end of Graph");
+
+    return make_tuple(m_row, m_Gptr->m_ci[m_indx], m_Gptr->m_nz[m_indx]);
+}
+
+/*
+ *  Method: Graph::egBegin()
+ *   Descr: Create a EgIterator at beginning of graph
+ */
+Graph::EgIterator Graph::egBegin()
+{
+    return EgIterator(this);
+}
+
+/*
+ *  Method: Graph::egEnd()
+ *   Descr: Create a EgIterator at end of graph
+ */
+Graph::EgIterator Graph::egEnd()
+{
+    return EgIterator(this, m_numEdge * 2);
+}
+
+/*
+ *  Method: Graph::NbIterator::NbIterator()
+ *   Descr: Loop through all the vertices that share an edge with a specified vertex
+ */
+Graph::NbIterator::NbIterator(Graph *Gptr, int v, int indx) : m_Gptr(Gptr), m_indx(indx || !Gptr ? indx : Gptr->m_re[v]), m_row(v)
+{
+    if (Gptr && v >= Gptr->m_numVert)
+    {
+        throw out_of_range("NbIterator: Vertex is not in Graph");
+    }
+}
+
+/*
+ *  Method: Graph::NbIterator::operator!=()
+ *   Descr: Override iterator comparison operator
+ */
+bool Graph::NbIterator::operator!=(const NbIterator &rhs)
+{
+
+    return m_Gptr != rhs.m_Gptr || m_row != rhs.m_row || m_indx != rhs.m_indx;
+}
+
+/*
+ *  Method: Graph::NbIterator::operator++()
+ *   Descr: Override iterator increment operator
+ */
+void Graph::NbIterator::operator++(int dummy)
+{
+
+    if (++m_indx > m_Gptr->m_re[m_row + 1])
+        m_indx--;
+}
+
+/*
+ *  Method: Graph::NbIterator::operator*()
+ *   Descr: Override iterator dereference operator
+ */
+int Graph::NbIterator::operator*()
+{
+    if (m_indx >= m_Gptr->m_re[m_row + 1])
+        throw out_of_range("NbIterator is already at end of row");
+
+    return m_Gptr->m_ci[m_indx];
+}
+
+/*
+ *  Method: Graph::nbBegin()
+ *   Descr: Create a NbIterator at beginning of row for specified vertex
+ */
+Graph::NbIterator Graph::nbBegin(int v)
+{
+
+    return NbIterator(this, v);
+}
+
+/*
+ *  Method: Graph::nbEnd()
+ *   Descr: Create a NbIterator at end of row for specified vertex
+ */
+Graph::NbIterator Graph::nbEnd(int v)
+{
+    return NbIterator(this, v, m_re[v + 1]);
+}
+
+/*------------------------------------------------------------------------------*/
+
+==> Int341.cpp <==
+#include <iostream>
+#include "Int341.h"
+using namespace std ;
+
+int Int341::m_constructor_calls = 0 ;
+int Int341::m_copy_constr_calls = 0;
+int Int341::m_destructor_calls = 0 ;
+int Int341::m_assignment_calls = 0 ;
+
+bool Int341::m_debug = false ;   // do not debug
+
+
+Int341::Int341(int n) {
+   if (m_debug) cout << "__Int341__ Constructor called\n" ;
+   m_data = n ;
+   m_constructor_calls++ ;
+}
+
+
+
+Int341::Int341(const Int341& other) {
+
+   if (m_debug) cout << "__Int341__ Copy constructor called\n" ;
+
+   m_data = other.m_data ;
+   m_copy_constr_calls++ ;
+}
+
+
+
+Int341::~Int341() {
+   if (m_debug) cout << "__Int341__ Destructor called\n" ;
+   m_data = 0 ;
+   m_destructor_calls++ ;
+}
+
+
+
+const Int341& Int341::operator=(const Int341& rhs) {
+
+   if (m_debug) cout << "__Int341__ Assignment operator called\n" ;
+
+   m_data = rhs.m_data ;
+   m_assignment_calls++ ;
+
+   return *this ;  
+}
+
+
+void Int341::report() {
+   cout << "__Int341__ Report usage:\n" ;
+   cout << "__Int341__   # of calls to constructor         = " << m_constructor_calls << endl ;
+   cout << "__Int341__   # of calls to copy constructor    = " << m_copy_constr_calls << endl ;
+   cout << "__Int341__   # of calls to destructor          = " << m_destructor_calls  << endl ;
+   cout << "__Int341__   # of calls to assignment operator = " << m_assignment_calls  << endl ;
+    
+}
+
