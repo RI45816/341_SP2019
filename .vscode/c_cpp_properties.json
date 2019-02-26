@@ -1,0 +1,21 @@
+{
+    "configurations": [{
+        "name": "Win32",
+        "includePath": [
+            "${workspaceFolder}/**",
+            "/usr/include",
+            "C:\\Users\\Owner\\AppData\\Local\\lxss\\rootfs\\usr\\include\\c++\\8",
+            "C:\\Users\\Owner\\AppData\\Local\\lxss\\rootfs\\usr\\include\\c++\\5"
+        ],
+        "defines": [
+            "_DEBUG",
+            "UNICODE",
+            "_UNICODE"
+        ],
+        "compilerPath": "/usr/bin/gcc",
+        "cStandard": "c11",
+        "cppStandard": "c++17",
+        "intelliSenseMode": "clang-x64"
+    }],
+    "version": 4
+}

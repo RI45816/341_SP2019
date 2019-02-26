@@ -63,11 +63,18 @@ void Baseline::Graph::addEdge(int u, int v, int x)
     vector<int>::iterator begin = m_ci.begin();
 
     // Check to see if the edge is already in the graph
-    vector<int>::iterator insert = find_if(begin + m_re[min], begin + m_re[min + 1], [max](int i) {
-        return i >= max;
-    });
-    if (insert != m_ci.end())
-    cout << "Insert: " << *insert << "" << endl;
+    vector<int>::iterator insert;
+    for (insert = begin + m_re[min]; insert != begin + m_re[min + 1] && *insert <= max; insert++)
+    {
+        // If edge in graph, change values in nonzero graph for original and transposed coordinates
+        if (*insert == max)
+        {
+            vector<int>::iterator changeTransposed = find(begin + m_re[max], begin + m_re[max + 1], min);
+            m_nz[insert - begin] = x;
+            m_nz[changeTransposed - begin] = x;
+            return;
+        }
+    }
 
     // Edge case for if edge is first in graph, insert first edge into Graph
     if (!m_numEdge++)
@@ -81,25 +88,16 @@ void Baseline::Graph::addEdge(int u, int v, int x)
     }
     else
     {
-        // If edge in graph, change values in nonzero graph for original and transposed coordinates
-        if (insert != m_ci.end() && *insert == max)
-        {
-            vector<int>::iterator changeTransposed = find_if(begin + m_re[max], begin + m_re[max + 1], [min](int i){return i==min;});
-            cout << "Insert - Begin: "<< insert-begin << "" << endl;
-            cout << "changeTransposed: "<< *changeTransposed << "" << endl;
-            m_nz[insert - begin] = x;
-            m_nz[changeTransposed - begin] = x;
-            return;
-        }
 
-        vector<int>::iterator beginNonZero = m_nz.begin();
-        m_nz.insert(beginNonZero + (insert - begin), x);
-        m_ci.insert(insert, max);
+
         vector<int>::iterator insertTransposed = find_if(begin + m_re[max], begin + m_re[max + 1], [min](int i) {
             return i > min;
         });
-        m_nz.insert(beginNonZero + (insertTransposed - begin), x);
+        m_nz.insert(m_nz.begin() + (insertTransposed - begin), x);
         m_ci.insert(insertTransposed, min);
+                m_nz.insert(m_nz.begin() + (insert - begin), x);
+        m_ci.insert(m_ci.begin()+(insert-begin), max);
+        // begin = m_ci.begin();
     }
 
     // Update row extent array
@@ -117,7 +115,7 @@ void Baseline::Graph::dump()
 {
 
     cout << "Dump of graph (numVert = " << m_numVert << ", numEdge = " << m_numEdge << ")\n"
-              << endl;
+         << endl;
 
     // Print out row extent array
     cout << "m_re: ";

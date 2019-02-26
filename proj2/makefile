@@ -35,7 +35,8 @@ $(EXE): %: %.cpp $(OBJS)
 	
 $(TEST): %: %.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $(filter-out $<,$(OBJS:.o=.cpp)) $< -o $@
-	./$@
+	# ./$@
+	
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< 
 	

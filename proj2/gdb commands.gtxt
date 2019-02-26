@@ -95,11 +95,17 @@ end
 b main
 commands
 silent
-bf B.*addE
-d
+b 26
+	commands
+	bf B.*addE
+		commands
+		ppa
+		bt
+	end
+	c
+end
 c
 end
-
 # b 27
 # dc 41
 # commands
@@ -122,10 +128,16 @@ end
 # call dup2(open("input.txt", 0), 0)
 # c
 
-tr
+# tr
+# define q
+# commands
+# shell wsl.exe pkill -f valgrind\.bin --signal 9
+# detach
+# quit
+# end
 
-# r
-# bt
+r
+bt
 # bf addE
 
 ppa
