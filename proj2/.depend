@@ -1,4 +1,4 @@
 BaselineGraph.o: BaselineGraph.h
 Graph.o: Graph.h
-Int341.o: Int341.h
 Grader.o: Grader.h
+Int341.o: Int341.h
