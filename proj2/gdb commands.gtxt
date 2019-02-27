@@ -95,11 +95,12 @@ end
 b main
 commands
 silent
-b 26
+bf B.*addE
 	commands
-	bf B.*addE
+	d
+	b 166
 		commands
-		ppa
+		ppa m_Gptr
 		bt
 	end
 	c
