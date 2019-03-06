@@ -92,19 +92,25 @@ end
 # ppa
 # end
 
+# bf B.*addE
+# commands
+# d
+# b 166
+# commands
+# ppa m_Gptr
+# bt
+# end
+# c
+# end
+# c
 b main
 commands
 silent
-bf B.*addE
-	commands
-	d
-	b 166
-		commands
-		ppa m_Gptr
-		bt
-	end
-	c
-end
+b Grader.cpp:247
+b Grader.cpp:243
+b Grader.cpp:259
+b Grader.cpp:254
+b Grader.cpp:251
 c
 end
 # b 27

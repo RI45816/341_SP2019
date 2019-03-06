@@ -106,7 +106,7 @@ int Graph::numEdge() {
 }
 
 void Graph::addEdge(int u, int v, int x) {
-  if (u < 0 || u >= m_numVert)
+  if (u < 0 )
     throw std::out_of_range("vertex u out-of-range");
 
   // Row u is in m_nz from index a to index b-1
@@ -168,9 +168,9 @@ void Graph::addEdge(int u, int v, int x) {
   // Now insert (v, u, x)...
   //
 
-  if (v < 0) {
-    throw std::out_of_range("vertex v out-of-range");
-  }
+  // if (v < 0 || v >= m_numVert) {
+  //   throw std::out_of_range("vertex v out-of-range");
+  // }
   
   // Row v is in m_nz from index a to index b-1
   a = m_re[v];

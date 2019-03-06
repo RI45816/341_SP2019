@@ -1,0 +1,272 @@
+==> Grader.h <==
+// File: Grader.h
+//
+// CMSC 341 Spring 2019
+//
+// Header file for Grader class
+//
+
+#ifndef _GRADER_H
+#define _GRADER_H
+
+#include <iostream>
+#include <stdexcept>  // for throwing out_of_range exceptions
+#include <tuple>      // Edges are respresented as tuple<int,int,int>
+#include <queue>      // Errors and decuctions are saved in a queue
+#include <vector>     // Vectors are used to store Edge sequences and
+		      // may be used in test implementations
+#include <set>        // Sets may be used in test implementations
+
+using namespace std;
+
+typedef tuple<int,int,int> Edge;   // Edge type definition
+
+// Error - a small class to organize error messages and deductions.
+// Defined in-line.
+class Error {
+ public:
+
+  // Constructor.  deductions must be >= 0
+  Error(int deduct = 0, int id = 0, string description = "") {
+    if (deduct < 0) {
+      throw std::out_of_range("deduction for error must be non-negative");
+    }
+    m_deduction = deduct;
+    m_id = id;
+    m_description = description;
+  }
+
+  // deduction getter
+  int getDeduction() { return m_deduction; }
+
+  // id getter
+  int getId() { return m_id; }
+  
+  // description getter
+  string getDescription() { return m_description; }
+
+  // formatted output of Errors
+  friend ostream& operator<<(ostream& outStream, const Error& err);
+
+private:
+  int m_deduction;            // points to deduct
+  int m_id;                   // id number of error
+  string m_description;       // description of error
+};
+
+class Grader {
+
+ public:
+
+  // Constructor; may provide optional descriptive name
+  Grader(string name = "");
+
+  // In the following test functions, the parameters are:
+  //
+  //   int numVert: number of vertices in test graph
+  //
+  //   vector<Edge> edgeSeq: a sequence of edges to insert in the
+  //   graph
+  
+  // Test for *exact* correctness of m_re, m_nz, and m_ci.  Assume
+  // that m_re is initialized to all zeroes
+  bool testCSRExact(int numVert, vector<Edge> edgeSeq);
+
+  // Test for *unordered* correctness of m_re, m_nz, and m_ci.  An
+  // implementation passes if (1) the values in m_re are correct, and
+  // (2) the values in m_nz and m_ci for each row are correct, but not
+  // necessarily ordered by increasing m_ci values.
+  bool testCSRUnordered(int numVert, vector<Edge> edgeSeq);
+
+  // Test that for *every* vertex in the Graph, NbIterator produces
+  // the correct list of neighbor vertices.
+  bool testNbIterator(int numVert, vector<Edge> edgeSeq);
+
+  // Test that the edge iterator returns the correct list of edges.
+  // Each edge should occur exactly once even though it is represented
+  // twice in the data structure; that is, only one of (u, v, w) and
+  // (v, u, w) should be included in the list produced by the
+  // iterator.
+  bool testEgIterator(int numVert, vector<Edge> edgeSeq);
+
+  // Test that operations that are supposed to throw an out_of_range
+  // exception do so.
+  bool testExceptions(int numVert, vector<Edge> edgeSeq);
+
+  // Print all the deductions and errors in the error queue and total
+  // deductions.  The queue should be empty after the call.
+  void printAllErrors();
+  
+  // Check to see if error in queue. IF not, add the error to the queue
+  void addError(Error err);
+
+  // Clear the error queue
+  void resetErrorQueue();
+
+ private:
+  string m_name;                 // Optional descriptive name
+  std::queue<Error> m_errors;    // Queue to hold errors and
+				 // deductions
+  
+  // ******************************************************//
+  // You may add private helper functions here.  They must //
+  // be declared inside the private section of the class.  // 
+  //*******************************************************//
+
+};
+
+#endif
+
+==> Grader.cpp <==
+// File: Grader.cpp
+//
+// CMSC 341 Spring 2019
+//
+// Method stubs for Grader class
+//
+
+#include "Grader.h"
+#include "BaselineGraph.h"
+#include "Graph.h"
+#include <string>
+
+/*
+ *  Method: Grader::Grader()
+ *   Descr: Constructor for Grader object
+ * @param name Optional descriptive name
+ */
+Grader::Grader(string name) : m_name(name)
+{
+}
+
+/*
+ *  Method: Grader::testCSRExact()
+ *   Descr: Tests m_re, m_nz, m_ci to see if all the right values, in the right order, are present
+ * @param numVert number of vertices of the Graph
+ * @param edgeSeq vector of edges to insert into the Graph
+ * @return Whether the program passed or failed the test
+ */
+bool Grader::testCSRExact(int numVert, vector<Edge> edgeSeq)
+{
+    Graph submitted_graph(numVert);          // Graph being tested
+    Baseline::Graph baseline_graph(numVert); // Baseline graph by which the submitted graph will be judged
+    bool errors = false;                     // Whether or not errors have been encountered
+
+    // Add all the edges and check to see if there are errors
+    for (Edge e : edgeSeq)
+    {
+        submitted_graph.addEdge(get<0>(e), get<1>(e), get<2>(e));
+        baseline_graph.addEdge(get<0>(e), get<1>(e), get<2>(e));
+
+        // Turn m_re into a vector and compare it with the proctor
+        if (vector<int>(submitted_graph.m_re, submitted_graph.m_re + submitted_graph.numVert() != baseline_graph.m_re))
+        {
+            addError(Error(5, 101, "Incorrect values in m_re"));
+            errors = true;
+        }
+
+        if (vector<int>(submitted_graph.m_nz, submitted_graph.m_nz + submitted_graph.numEdge() * 2 != baseline_graph.m_nz))
+        {
+            addError(Error(5, 102, "Incorrect values in m_nz"));
+            errors = true;
+        }
+        if (vector<int>(submitted_graph.m_ci, submitted_graph.m_ci + submitted_graph.numEdge() * 2 != baseline_graph.m_ci))
+        {
+            addError(Error(5, 103, "Incorrect values in m_ci"));
+            errors = true;
+        }
+        baseline_graph.dump();
+    }
+    return !errors;
+}
+
+/*
+ *  Method: Grader::testCSRUnordered()
+ *   Descr: 
+ */
+bool Grader::testCSRUnordered(int numVert, vector<Edge> edgeSeq)
+{
+    bool dummy;
+
+    return dummy;
+}
+
+/*
+ *  Method: Grader::testNbIterator()
+ *   Descr: 
+ */
+bool Grader::testNbIterator(int numVert, vector<Edge> edgeSeq)
+{
+    bool dummy;
+
+    return dummy;
+}
+
+/*
+ *  Method: Grader::testEgIterator()
+ *   Descr: 
+ */
+bool Grader::testEgIterator(int numVert, vector<Edge> edgeSeq)
+{
+    bool dummy;
+
+    return dummy;
+}
+
+/*
+ *  Method: Grader::testExceptions()
+ *   Descr: 
+ */
+bool Grader::testExceptions(int numVert, vector<Edge> edgeSeq)
+{
+    bool dummy;
+
+    return dummy;
+}
+
+/*
+ *  Method: Grader::addError()
+ *   Descr: Add an error to the queue
+ * @param err Error to be added
+ */
+void Grader::addError(Error err)
+{
+//    deque<Error> error_queue(m_errors);
+    if (find(begin(m_errors),end(m_errors),err) != end(m_errors))
+        m_errors.push(err);
+}
+
+/*
+ *  Method: Grader::resetErrorQueue()
+ *   Descr: 
+ */
+void Grader::resetErrorQueue()
+{
+}
+
+// Formatted output of Error object:
+// deduction: (id) description
+
+ostream &operator<<(ostream &outStream, const Error &err)
+{
+    if (err.m_deduction > 0)
+    {
+        outStream << "-" << err.m_deduction << ": (" << err.m_id
+                  << ") " << err.m_description;
+    }
+    else
+    {
+        outStream << err.m_deduction << ": (" << err.m_id
+                  << ") " << err.m_description;
+    }
+    return outStream;
+}
+
+/*
+ *  Method: Grader::printAllErrors()
+ *   Descr: 
+ */
+void Grader::printAllErrors()
+{
+}
+/*------------------------------------------------------------------------------*/

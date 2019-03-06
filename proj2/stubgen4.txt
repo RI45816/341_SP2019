@@ -1,3 +1,4 @@
+==> Grader.h <==
 // File: Grader.h
 //
 // CMSC 341 Spring 2019
@@ -96,6 +97,8 @@ class Grader {
   // deductions.  The queue should be empty after the call.
   void printAllErrors();
   
+  // Check to see if error in queue. IF not, add the error to the queue
+  void addError(Error err);
 
   // Clear the error queue
   void resetErrorQueue();
@@ -113,3 +116,142 @@ class Grader {
 };
 
 #endif
+
+==> Grader.cpp <==
+// File: Grader.cpp
+//
+// CMSC 341 Spring 2019
+//
+// Method stubs for Grader class
+//
+
+#include "Grader.h"
+#include "BaselineGraph.h"
+#include "Graph.h"
+#include <string>
+
+/*
+ *  Method: Grader::Grader()
+ *   Descr: Constructor for Grader object
+ * @param name Optional descriptive name
+ */
+Grader::Grader(string name) : m_name(name)
+{
+}
+
+/*
+ *  Method: Grader::testCSRExact()
+ *   Descr: Tests m_re, m_nz, m_ci to see if all the right values, in the right order, are present
+ * @param numVert number of vertices of the Graph
+ * @param edgeSeq vector of edges to insert into the Graph
+ * @return Whether the program passed or failed the test
+ */
+bool Grader::testCSRExact(int numVert, vector<Edge> edgeSeq)
+{
+    Graph tested_graph(numVert);
+    Baseline::Graph proctor_graph(numVert);
+    bool errors = false; // Whether or not errors have been encountered
+    for (Edge e : edgeSeq) {
+        tested_graph.addEdge(get<0>(e),get<1>(e),get<2>(e));
+        proctor_graph.addEdge(get<0>(e),get<1>(e),get<2>(e));
+        if (vector<int>(tested_graph.m_re,tested_graph.m_re+tested_graph.numEdge() != proctor_graph.m_re)) {
+            addError()
+        }
+        proctor_graph.dump();
+    }
+    bool dummy;
+
+    return dummy;
+}
+
+/*
+ *  Method: Grader::testCSRUnordered()
+ *   Descr: 
+ */
+bool Grader::testCSRUnordered(int numVert, vector<Edge> edgeSeq)
+{
+    bool dummy;
+
+    return dummy;
+}
+
+/*
+ *  Method: Grader::testNbIterator()
+ *   Descr: 
+ */
+bool Grader::testNbIterator(int numVert, vector<Edge> edgeSeq)
+{
+    bool dummy;
+
+    return dummy;
+}
+
+/*
+ *  Method: Grader::testEgIterator()
+ *   Descr: 
+ */
+bool Grader::testEgIterator(int numVert, vector<Edge> edgeSeq)
+{
+    bool dummy;
+
+    return dummy;
+}
+
+/*
+ *  Method: Grader::testExceptions()
+ *   Descr: 
+ */
+bool Grader::testExceptions(int numVert, vector<Edge> edgeSeq)
+{
+    bool dummy;
+
+    return dummy;
+}
+
+
+
+/*
+ *  Method: Grader::resetErrorQueue()
+ *   Descr: 
+ */
+void Grader::resetErrorQueue()
+{
+}
+
+// Formatted output of Error object:
+// deduction: (id) description
+ostream &operator<<(ostream &outStream, const Error &err)
+{
+    if (err.m_deduction > 0)
+    {
+        outStream << "-" << err.m_deduction << ": (" << err.m_id
+                  << ") " << err.m_description;
+    }
+    else
+    {
+        outStream << err.m_deduction << ": (" << err.m_id
+                  << ") " << err.m_description;
+    }
+    return outStream;
+}
+
+/*
+ *  Method: Grader::printAllErrors()
+ *   Descr: 
+ */
+void Grader::printAllErrors()
+{
+}
+
+/*------------------------------------------------------------------------------*/
+/*
+ *  Method: Grader::addError()
+ *   Descr: 
+ */
+void Grader::addError()
+{
+}
+
+
+	/*------------------------------------------------------------------------------*/
+
