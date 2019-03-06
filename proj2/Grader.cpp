@@ -86,7 +86,7 @@ bool Grader::testCSRUnordered(int numVert, vector<Edge> edgeSeq) {
         return false;
     } else {
         for (int i = 0, min = submitted_graph.m_re[i], max = submitted_graph.m_re[i + 1]; i < numVert; i++) {
-min = submitted_graph.m_re[i], max = submitted_graph.m_re[i + 1]
+min = submitted_graph.m_re[i]; max = submitted_graph.m_re[i + 1];
             // Compare the m_ci and m_nz of the submitted graph with that of the baseline graph to see if the
             // same values, regardless of order
             set<int> submitted_graph_nz(submitted_graph.m_nz + min, submitted_graph.m_nz + max),
