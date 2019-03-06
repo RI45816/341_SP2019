@@ -221,6 +221,7 @@ bool Grader::testExceptions(int numVert, vector<Edge> edgeSeq) {
         m_errors.push(Error(5, 511, "Constructor with n = 0 did not throw an exception"));
         passOrFail = false;
     }
+    delete submitted_graph;
 
     // Test n < 0 exception
     exceptionCaught = false;
@@ -238,6 +239,8 @@ bool Grader::testExceptions(int numVert, vector<Edge> edgeSeq) {
         m_errors.push(Error(5, 521, "Constructor with n < 0 did not throw an exception"));
         passOrFail = false;
     }
+
+    delete submitted_graph;
 
     Graph submitted_graph(7); // Graph being tested
 
@@ -338,6 +341,8 @@ bool Grader::testExceptions(int numVert, vector<Edge> edgeSeq) {
         m_errors.push(Error(5, 561, "Dereference of edge end iterator threw no exception"));
         passOrFail = false;
     }
+
+    delete submitted_graph;
 
 
     return passOrFail;
