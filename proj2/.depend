@@ -1,9 +1,9 @@
-Grader.o: Grader.cpp Grader.h BaselineGraph.h Graph.h
-Graph.o: Graph.cpp Graph.h
-test1bg.o: test1bg.cpp BaselineGraph.h
-BaselineGraph.o: BaselineGraph.cpp BaselineGraph.h
-Int341.o: Int341.cpp Int341.h
-GraphTest1.o: GraphTest1.cpp Graph.h
-driver.o: driver.cpp Grader.h Graph.h
-Graph2.o: Graph2.cpp Graph2.h
 GraphTest1_old.o: GraphTest1_old.cpp Graph.h
+Graph2.o: Graph2.cpp Graph2.h
+driver.o: driver.cpp Grader.h Graph.h
+GraphTest1.o: GraphTest1.cpp Graph.h
+Int341.o: Int341.cpp Int341.h
+BaselineGraph.o: BaselineGraph.cpp BaselineGraph.h
+test1bg.o: test1bg.cpp BaselineGraph.h
+Graph.o: Graph.cpp Graph.h
+Grader.o: Grader.cpp Grader.h BaselineGraph.h Graph.h
