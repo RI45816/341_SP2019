@@ -1,0 +1,150 @@
+# target remote | vgdb
+python
+T=list(filter(lambda x: "debug_count" in x,gdb.execute("info variable debug_count",False,True).split()))[-1][:-1]
+if len(T) >= 11 and '"' not in T:
+	cd = (str(gdb.parse_and_eval("&'%s'" % T)).split()[0],)
+end
+
+# target remote
+# b 54
+
+# define cn
+# set $m = 0
+# if $_any_caller_matches(".*Heap.*")
+#	# ppa 12
+# end
+# ial
+# f
+# end
+
+define ppa
+	# p *this
+	ial
+	set $t = this
+	if $argc
+		set $t = $arg0
+	end
+	p $t
+	p *$t
+	# set $i = 0
+	# set $j = $t->m_numEdge << 1
+	# printf "m_nz = {\n"
+	# while $i < $j
+		# printf "\t[%u]: %u\n", $i, $t->m_nz[$i++]
+	# end
+	# printf "}\nm_re = {\n"
+	# set $i = 0
+	# set $k = $t->m_numVert + 1
+	# while $i < $k
+		# printf "\t[%u]: %u\n", $i, $t->m_re[$i++]
+	# end
+	# printf "}\nm_ci = {\n"
+	# set $i = 0
+	# while $i < $j
+		# printf "\t[%u]: %u\n", $i, $t->m_ci[$i++]
+	# end	
+	# printf "}\n"
+	pvector $t->m_nz
+	pvector $t->m_re
+	pvector $t->m_ci
+end
+# if $_any_caller_matches(".*(swap|compare).*")
+# if hi1
+# if hi2
+# p {*hi1,*hi2}
+# else
+# p *hi1
+# end
+# else
+# if hi2
+# p *hi2
+# end
+# end
+# end
+
+# define ppa
+# pt
+# ial
+# p *m_nz@m_cap
+# p *m_re@m_numVert+1
+# p *m_ci@m_cap
+# end
+
+# dc 1275
+# commands
+# silent
+# d
+# b ChainHashTable<Int341>::remove(Int341 const&, bool&)
+# c
+# end
+
+# bf Probe.*find
+
+# log
+
+# b MinMaxHeap.cpp:124
+# python gdb.execute("b MinMaxHeap.cpp:175 if *%s >= 38106" % cd)
+# dc 0
+# dc 7243
+
+
+# commands
+# ppa
+# end
+
+# bf B.*addE
+# commands
+# d
+# b 166
+# commands
+# ppa m_Gptr
+# bt
+# end
+# c
+# end
+# c
+# b main
+# commands
+# silent
+# b Grader.cpp:247
+# b Grader.cpp:243
+# b Grader.cpp:259
+# b Grader.cpp:254
+# b Grader.cpp:251
+# c
+# end
+# b 27
+# dc 41
+# commands
+# bf EgIterator
+# bt
+# ppa
+# end
+# bf dump
+# command8
+# b 100
+# c
+# end
+# c
+
+# b 322
+# b 188
+# b 232
+# call dup2(open("/dev/null",1), 1)
+# b 230
+# call dup2(open("input.txt", 0), 0)
+# c
+
+# tr
+# define q
+# commands
+# shell wsl.exe pkill -f valgrind\.bin --signal 9
+# detach
+# quit
+# end
+
+r
+bt
+# bf addE
+
+# ppa

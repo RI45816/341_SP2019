@@ -8,6 +8,10 @@
       <in>Grader.h</in>
       <in>Graph.cpp</in>
       <in>Graph.h</in>
+      <in>Graph2.cpp</in>
+      <in>Graph2.h</in>
+      <in>GraphTest1.cpp</in>
+      <in>GraphTest1_old.cpp</in>
       <in>Int341.cpp</in>
       <in>Int341.h</in>
       <in>driver.cpp</in>
